@@ -17,6 +17,9 @@ class User(UserMixin, db.Model):
   # Relaciones
   proyectos         =db.relationship("Proyecto", backref="Usuario", lazy="dynamic")
 
+  def as_dict(self):
+    return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
 
 class Proyecto(db.Model):
   id                =db.Column(db.Integer, primary_key=True)
@@ -27,6 +30,9 @@ class Proyecto(db.Model):
   # Relaciones
   pendientes        =db.relationship("Pendiente", backref="Proyecto", lazy="dynamic")
 
+  def as_dict(self):
+    return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
 
 class Pendiente(db.Model):
   id                =db.Column(db.Integer, primary_key=True)
@@ -36,6 +42,9 @@ class Pendiente(db.Model):
   due_date          =db.Column(db.DateTime)
   completed         =db.Column(db.Boolean, default=False)
   id_proyecto       =db.Column(db.Integer, db.ForeignKey("proyecto.id"))
+
+  def as_dict(self):
+    return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 @login.user_loader
 def load_user(id):

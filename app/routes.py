@@ -3,7 +3,7 @@ from app import app
 from flask import render_template, url_for, redirect, request, jsonify
 from app.forms import LoginForm, RegisterForm
 from flask_login import current_user, login_user, logout_user, login_manager, LoginManager, login_required
-from app.models import User
+from app.models import Proyecto, User
 from app import db
 
 # ----[LOGIN]----
@@ -59,6 +59,7 @@ def register():
         return render_template("register.html", form=form)
 
 @app.route("/logout")
+@login_required
 def logout():
     logout_user()
     return redirect(url_for("login"))
@@ -66,32 +67,54 @@ def logout():
 # ----[RUTAS]----
 
 @app.route("/")
+@login_required
 def index():
     return render_template("index.html")
 
 # ----[API]----
 
-@app.route("/proyectos/", methods=["GET", "POST"])
+#{'title': 'lol', 'desc': 'xd'} 💤
+
+@app.route("/proyectos", methods=["GET", "POST"])
 def proyectos():
     if request.method == 'GET':
-        return jsonify('get todos')
+        proyectos = Proyecto.query.all()
+        return jsonify(json_list=[i.as_dict() for i in proyectos])
     elif request.method == 'POST':
         data = request.get_json(force=True)
-        print(data)
-        print()
-        return jsonify('post todo')
+        nuevoProyecto = Proyecto(title=data["title"], desc=data["desc"], id_user=current_user.id)
+        db.session.add(nuevoProyecto)
+        db.session.commit()
+        proyecto = Proyecto.query.filter_by(id=nuevoProyecto.id).first()
+        return jsonify(proyecto)
     else:
-        return jsonify('a')
+        return jsonify('error: MAL REQUEST')
 
-@app.route("/proyectos/<int:id>", methods=["GET", "POST"])
+@app.route("/proyectos/<int:id>", methods=["GET", "PUT", "DELETE"])
 def proyecto(id):
     if request.method == 'GET':
         return jsonify('get todos')
-    elif request.method == 'POST':
+    elif request.method == 'PUT':
         data = request.get_json(force=True)
         print(data)
         print()
-        return jsonify('post todo')
+        return jsonify('put todo')
+        
+    elif request.method == 'DELETE':
+        data = request.get_json(force=True)
+        borrarProyecto = Proyecto(title=data.title,desc=data.desc,id_user=current_user.id)
+        db.session.delete(borrarProyecto)
+        return jsonify(borrarProyecto)
     else:
-        return jsonify('a')
+        return jsonify('error: MAL REQUEST')
+
+# REST API
+# ruta/ 
+    # obtener todos <- GET
+    # postear uno <-POST
+
+# ruta/id
+    # editar uno <- PUT
+    # borrar uno <- DELETE
+    # obtener uno <- GET
 

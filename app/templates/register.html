@@ -24,7 +24,7 @@
         <p class="warning">{{ error }}</p>
     {% endfor %}
 
-    {{form.submit() }}
+    {{form.submit(class='btn') }}
   </form>
   <p>Ya estas registrado? <a href="{{url_for('login')}}">Inicia Sesión</a>.</p>
 {% endblock %}

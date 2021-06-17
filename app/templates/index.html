@@ -49,13 +49,14 @@
     ];
 
     (async()=>{
-      let res = await fetch(Flask.url_for('proyectos'), {
-        method: 'POST',
-        body: JSON.stringify({
-          title: 'lol',
-          desc: 'xd'
-        }),
-      });
+      let res = await fetch(Flask.url_for('proyectos'))
+      // let res = await fetch(Flask.url_for('proyectos'), {
+      //   method: 'POST',
+      //   body: JSON.stringify({
+      //     title: 'lol',
+      //     desc: 'xd'
+      //   }),
+      // });
       let data = await res.json();
       console.log(res, data)
     })()
