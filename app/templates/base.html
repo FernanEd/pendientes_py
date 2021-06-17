@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{% endblock%}</title>
+  <style>
+    :root{
+      --primary: #22d;
+      --secondary: #d92;
+      --text: #333;
+      --text-inv: #fff;
+      --light: #e8e8e8;
+      --dark: #222;
+      --disabled: #999;
+
+      --success: #2c2;
+      --danger: #c25;
+      --warning: #da2;
+    }
+
+    * {
+			padding: 0;
+			margin: 0;
+			box-sizing: border-box;
+			font-family: monospace;
+		}
+
+		html,
+		body {
+			font-size: 16px;
+			color: var(--text);
+		}
+
+		a {
+			color: var(--primary);
+			text-decoration: none;
+		}
+
+		a:hover {
+			text-decoration: underline;
+		}
+
+		.btn {
+			background-color: var(--primary);
+			color: var(--text-inv);
+			padding: 0.5rem 0.75rem;
+			border: 0;
+			border-radius: 0.25rem;
+			font-size: 1rem;
+			cursor: pointer;
+		}
+
+		.btn:hover {
+			filter: brightness(1.2);
+		}
+
+		.btn-disabled{
+			background-color: var(--disabled);
+		}
+
+		.btn-success{
+			background-color: var(--success);
+		}
+
+		.btn-warning{
+			background-color: var(--warning);
+		}
+
+		.btn-danger{
+			background-color: var(--danger);
+		}
+
+		input:not([type='submit']) {
+			padding: 0.75rem;
+		}
+
+		body > header {
+			background-color: var(--primary);
+			color: var(--primary);
+			display: flex;
+			justify-content: space-between;
+			padding: 1rem calc((100vw - 1000px - 0.5rem) / 2);
+		}
+
+		body > header > nav > ul {
+			display: flex;
+			list-style: none;
+			gap: 1rem;
+		}
+
+		body > header > nav > ul > li > a {
+			color: var(--text-inv);
+		}
+
+		body > main {
+			padding: 1rem calc((100vw - 1000px - 0.5rem) / 2);
+		}
+
+		ul {
+			padding-left: 1.25rem;
+		}
+
+		form {
+			margin: 1rem 0rem;
+			display: flex;
+			flex-direction: column;
+			gap: 0.5rem;
+		}
+
+    .primary{
+      color: var(--primary)
+    }
+
+    .danger{
+      color: var(--danger)
+    }
+
+    .success{
+      color: var(--success)
+    }
+
+    .warning{
+      color: var(--warning)
+    }
+
+    .secondary{
+      color: var(--secondary)
+    }
+
+    .disabled{
+      color: var(--disabled)
+    }
+
+		.table{
+			margin-top: 1rem;
+			width: 100%;
+			border-collapse: collapse;
+		}
+
+		.table td, .table th{
+			border: 2px solid var(--dark);
+			padding: 0.5rem;
+		}
+  </style>
+	{% block style %}{% endblock %}
+	{{ JSGlue.include() }}
+</head>
+<body>
+  <header>
+    {% if current_user.is_authenticated %}
+    <p>Usuario: {{ current_user.email }}</p>
+    {% else %}
+    <p></p>
+    {% endif %}
+    <nav>
+      <ul>
+        <li><a href="{{url_for('index')}}">Inicio</a></li>
+        {% if current_user.email %}
+        <li><a href="{{url_for('logout')}}">Salir</a></li>
+        {% else %}
+        <li><a href="{{url_for('login')}}">Ingresar</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </header>
+  <main>{% block content %}{% endblock%}</main>
+
+	<script>
+		
+	</script>
+	{% block script %}{% endblock %}
+</body>
+</html>
+
+
+

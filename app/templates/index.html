@@ -1,0 +1,85 @@
+{% extends "base.html" %} 
+
+{% block title %}
+  Agenda de pendientes
+{% endblock %}
+
+{% block content %}
+  <button class='btn'>Agregar un proyecto</button>
+
+  <button class='btn' id="lol">aaaaaaaaa</button>
+
+  <h2>Proyectos</h2>
+  <section id="proyectos-wrapper">
+
+  </section>
+{% endblock %}
+
+{% block style %}
+  <style>
+    h2{
+      margin: 1rem 0;
+    }
+    
+    #proyectos-wrapper{
+      margin: 2rem auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .proyectos-item{
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      border: 1px solid var(--disabled);
+      border-left: 5px solid var(--primary);
+      border-radius: 0rem 0.25rem 0.25rem 0rem;
+    }
+  </style>
+{% endblock %}
+
+{% block script %}
+  <script>
+    let proyectos = [
+      {title: 'lol', desc: 'xd'},
+      {title: 'ay wey', desc: 'xd'},
+      {title: 'lol 2', desc: 'omg'},
+      {title: 'lol 3', desc: 'e'},
+    ];
+
+    (async()=>{
+      let res = await fetch(Flask.url_for('proyectos'), {
+        method: 'POST',
+        body: JSON.stringify({
+          title: 'lol',
+          desc: 'xd'
+        }),
+      });
+      let data = await res.json();
+      console.log(res, data)
+    })()
+
+    document.querySelector('#lol').addEventListener('click', e => {
+      console.log(Flask.url_for("index"));
+      console.log(Flask.url_for("proyectos"));
+    })
+
+    document.querySelector('#proyectos-wrapper').innerHTML = proyectos.map(proyecto => `
+      <article class="proyectos-item">
+        <div>
+          <h3>${proyecto.title}</h4>
+          <p>${proyecto.desc}</p>
+        </div>
+        <div>
+          <button class='btn btn-warning'>Editar</button>
+          <button class='btn btn-danger'>Eliminar</button>
+        </div>
+      </article>
+    `).join('')
+
+    // const getProyectos = async() => {
+    //   let res = fetch('')
+    // }
+  </script>
+{% endblock %}

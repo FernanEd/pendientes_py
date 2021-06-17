@@ -1,0 +1,16 @@
+tabla Usuario
+- username
+- contraseña
+
+tabla Proyecto
+- titulo
+- desc
+- id_usuario
+
+table Pendiente
+- titulo
+- desc
+- prioridad
+- fecha_limite
+- estado (completado, no completado)
+- id_proyecto
