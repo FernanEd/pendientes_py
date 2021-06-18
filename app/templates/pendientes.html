@@ -22,6 +22,12 @@
   #pendientes-form{
     display: flex;
     flex-direction: row;
+    align-items: flex-end;
+    z-index: 99;
+  }
+
+  #pendientes-form button{
+    height: 43px;
   }
 
   .input-group:first-of-type{
@@ -35,15 +41,20 @@
   }
 
   .pendientes-item{
+    padding: 1rem;
     display: flex;
+    align-items: center;
     justify-content: space-between;
+    border: 1px solid var(--disabled);
+    border-left: 5px solid var(--primary);
+    border-radius: 0rem 0.25rem 0.25rem 0rem;
   }
 </style>
 {% endblock %}
 
 <div id="pendiente-bg">
   <div id="pendiente-modal">
-    <button id="close-btn" class="btn btn-disabled">X</button>
+    <a id="modal-exit" href="#" class="sm-link">&larr; Volver a proyecto</a>
     <h2>Agregar un pendiente</h2>
     <form id="pendientes-form">
       <div class='input-group'>
@@ -71,15 +82,13 @@
     <h2>Pendientes</h2>
     <section id="pendientes-wrapper">
       <article class="pendientes-item">
-        <div class="pendientes-body">
+        <div>
           <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-          <p>Priority: 1</p>
+          <p><strong>Priority:</strong> 1</p>
         </div>
         <div>
           <input type="checkbox" name="" id="">
         </div>
-
-        
       </article>
     </section>
   </div>
@@ -87,13 +96,32 @@
 
 {% block script %}
 <script>
+
+  // CODIGO MODAL
+
   let modalActive = false;
-
+  let modalBtn = document.querySelector("#modal-exit");
   let modalBG = document.querySelector("#pendiente-bg");
+  const toggleModal = () => {
+    modalBG.style.display = modalActive? 'initial' : 'none';
+    modalActive = !modalActive;
+  }
+  modalBtn.addEventListener('click', toggleModal);
+  window.compartido = {...window.compartido, toggleModal}
 
+  // CODIGO PROYECTO FORM
+  const $pendiente_desc = document.querySelector('#pendiente-desc')
+  const $pendiente_priority = document.querySelector('#pendiente-priority')
 
-  // const toggleModal = () => {
+  document.querySelector('#pendientes-form').addEventListener('submit', e => {
+    e.preventDefault();
+    let desc = $pendiente_desc.value;
+    let priority = $pendiente_priority.value;
+    console.log(desc, priority);
+    // addProyecto({title, desc})
+    // //Clear form
+    // e.target.reset()
+  })
 
-  // }
 </script>
 {% endblock %}

@@ -132,7 +132,7 @@
             <h3>${proyecto.title}</h4>
             <p>${proyecto.desc}</p>
             <br>
-            <a href="#" class="sm-link">Ver pendientes &rarr;</a>
+            <a href="#" class="sm-link" onClick="(abrirPendientes(${proyecto.id}))"">Ver pendientes &rarr;</a>
           </div>
           <div>
             <button class='btn btn-warning' onClick="(deleteProyecto(${proyecto.id}))">Editar</button>
@@ -143,6 +143,12 @@
     }
 
     getProyectos();
+
+    const abrirPendientes = (proyectoid) => {
+      //Agregar id del proyecto
+      window.compartido = {...window.compartido, proyectoid};
+      window.compartido.toggleModal();
+    }
 
     // CODIGO PROYECTO FORM
     const $title = document.querySelector('#proyecto-title')
