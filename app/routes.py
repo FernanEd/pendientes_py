@@ -79,32 +79,43 @@ def index():
 def proyectos():
     if request.method == 'GET':
         proyectos = Proyecto.query.all()
-        return jsonify(json_list=[i.as_dict() for i in proyectos])
+        return jsonify([i.as_dict() for i in proyectos])
     elif request.method == 'POST':
         data = request.get_json(force=True)
         nuevoProyecto = Proyecto(title=data["title"], desc=data["desc"], id_user=current_user.id)
         db.session.add(nuevoProyecto)
         db.session.commit()
-        proyecto = Proyecto.query.filter_by(id=nuevoProyecto.id).first()
-        return jsonify(proyecto)
+        return jsonify(nuevoProyecto.as_dict())
     else:
         return jsonify('error: MAL REQUEST')
+
+# NELSON MANDELA xd
+# NELSON KANDELA xp
+# NELSON KANSELA
 
 @app.route("/proyectos/<int:id>", methods=["GET", "PUT", "DELETE"])
 def proyecto(id):
     if request.method == 'GET':
+        
         return jsonify('get todos')
     elif request.method == 'PUT':
+        # x = Proyecto.query.filter_by(id=id).first()
         data = request.get_json(force=True)
+        updateProyecto = Proyecto(title=data["title"], desc=data["desc"], id_user=current_user.id)
+        ### Update manual en SQLAlchemy ###
+        # x.title = updateProyecto.title
+        # x.desc = updateProyecto.desc
+        # db.session.commit()
         print(data)
         print()
         return jsonify('put todo')
         
     elif request.method == 'DELETE':
-        data = request.get_json(force=True)
-        borrarProyecto = Proyecto(title=data.title,desc=data.desc,id_user=current_user.id)
+        print(id)
+        borrarProyecto = Proyecto.query.get(id)
         db.session.delete(borrarProyecto)
-        return jsonify(borrarProyecto)
+        db.session.commit()
+        return jsonify(borrarProyecto.as_dict())
     else:
         return jsonify('error: MAL REQUEST')
 

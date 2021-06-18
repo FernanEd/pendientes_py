@@ -5,14 +5,14 @@
 {% endblock %}
 
 {% block content %}
-  <button class='btn'>Agregar un proyecto</button>
 
-  <button class='btn' id="lol">aaaaaaaaa</button>
+  {% include "./proyecto_form.html"%}
+    
+  <hr>
 
   <h2>Proyectos</h2>
-  <section id="proyectos-wrapper">
+  <section id="proyectos-wrapper"></section>
 
-  </section>
 {% endblock %}
 
 {% block style %}
@@ -41,46 +41,77 @@
 
 {% block script %}
   <script>
-    let proyectos = [
-      {title: 'lol', desc: 'xd'},
-      {title: 'ay wey', desc: 'xd'},
-      {title: 'lol 2', desc: 'omg'},
-      {title: 'lol 3', desc: 'e'},
-    ];
+    let proyectosArray = [];
+    const $proyectos = document.querySelector('#proyectos-wrapper');
+ 
+    const getProyectos = async() => {
+      $proyectos.innerText = 'Loading...'
+      try{
+        const url = Flask.url_for('proyectos');
+        let res = await fetch(url)
+        let data = await res.json();
+        proyectosArray = [...data];
+        updateProyectos();
+      }
+      catch(err){
+        $proyectos.innerText = err.error;
+        console.error(err);
+      }
+    }
 
-    (async()=>{
-      let res = await fetch(Flask.url_for('proyectos'))
-      // let res = await fetch(Flask.url_for('proyectos'), {
-      //   method: 'POST',
-      //   body: JSON.stringify({
-      //     title: 'lol',
-      //     desc: 'xd'
-      //   }),
-      // });
-      let data = await res.json();
-      console.log(res, data)
-    })()
+    const addProyecto = async({title, desc}) => {
+      try{
+        const url = Flask.url_for('proyectos');
+        let res = await fetch(url, {
+          method: 'POST',
+          body: JSON.stringify({title, desc})
+        })
+        let data = await res.json();
+        proyectosArray = [...proyectosArray, data];
+        updateProyectos();
+      }
+      catch(err){
+        $proyectos.innerText = err.error;
+        console.error(err);
+      }
+    }
 
-    document.querySelector('#lol').addEventListener('click', e => {
-      console.log(Flask.url_for("index"));
-      console.log(Flask.url_for("proyectos"));
-    })
+    const deleteProyecto = async(id) => {
+      try{
+        const url = `${Flask.url_for('proyectos')}/${id}`;
+        let res = await fetch(url, {
+          method: "DELETE"
+        })
+        let data = await res.json();
 
-    document.querySelector('#proyectos-wrapper').innerHTML = proyectos.map(proyecto => `
-      <article class="proyectos-item">
-        <div>
-          <h3>${proyecto.title}</h4>
-          <p>${proyecto.desc}</p>
-        </div>
-        <div>
-          <button class='btn btn-warning'>Editar</button>
-          <button class='btn btn-danger'>Eliminar</button>
-        </div>
-      </article>
-    `).join('')
+        proyectosArray = [...proyectosArray.filter(proyecto => proyecto.id != data.id)];
+        updateProyectos();
+      }
+      catch(err){
+        console.error(err);
+      }
+    }
 
-    // const getProyectos = async() => {
-    //   let res = fetch('')
-    // }
+    const updateProyectos = () => {
+      $proyectos.innerHTML = proyectosArray.length > 0 ? proyectosArray.map(proyecto => `
+        <article class="proyectos-item">
+          <div>
+            <h3>${proyecto.title}</h4>
+            <p>${proyecto.desc}</p>
+          </div>
+          <div>
+            <button class='btn btn-warning' onClick="(deleteProyecto(${proyecto.id}))">Editar</button>
+            <button class='btn btn-danger' onClick="(deleteProyecto(${proyecto.id}))">Eliminar</button>
+          </div>
+        </article>
+      `).join('') : 'No hay proyectos aun.'
+    }
+
+    window.proyectos = {
+      addProyecto,
+      deleteProyecto
+    }
+
+    getProyectos();
   </script>
 {% endblock %}
