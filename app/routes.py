@@ -89,10 +89,6 @@ def proyectos():
     else:
         return jsonify('error: MAL REQUEST')
 
-# NELSON MANDELA xd
-# NELSON KANDELA xp
-# NELSON KANSELA
-
 @app.route("/proyectos/<int:id>", methods=["GET", "PUT", "DELETE"])
 def proyecto(id):
     if request.method == 'GET':
@@ -129,3 +125,27 @@ def proyecto(id):
     # borrar uno <- DELETE
     # obtener uno <- GET
 
+@app.route("/proyectos/<int:proyectoid>/pendientes/", methods=["GET", "POST"])
+def pendientes(proyectoid):
+    if request.method == 'GET':
+        return 1
+    elif request.method == 'POST':
+
+        return 2
+    else:
+        return jsonify('error: MAL REQUEST')
+
+@app.route("/proyectos/<int:proyectoid>/pendientes/<int:pendienteid>", methods=["GET", "PUT", "DELETE"])
+def pendiente(proyectoid, pendienteid):
+    if request.method == 'GET':
+        
+        return 4
+    elif request.method == 'PUT':
+
+        return 5
+        
+    elif request.method == 'DELETE':
+
+        return 6
+    else:
+        return jsonify('error: MAL REQUEST')

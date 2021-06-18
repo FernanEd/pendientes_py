@@ -6,7 +6,24 @@
 
 {% block content %}
 
-  {% include "./proyecto_form.html"%}
+  {% include "pendientes.html" %}
+
+  <form id='proyecto-form'>
+    <div class='input-group'> 
+      <label>
+        Titulo
+      </label>
+      <input id="proyecto-title" type="text" required>
+    </div>
+    <div class='input-group'>
+      <label>
+        Descripción
+      </label> 
+      <textarea id="proyecto-desc" rows="5" required></textarea>
+    </div>
+    
+    <button class='btn' type="submit">Agregar un proyecto</button>
+  </form>
     
   <hr>
 
@@ -76,6 +93,22 @@
       }
     }
 
+    // const editProyecto = async(id, {title, desc}) => {
+    //   try{
+    //     const url = `${Flask.url_for('proyectos')}/${id}`;
+    //     let res = await fetch(url, {
+    //       method: "DELETE"
+    //     })
+    //     let data = await res.json();
+
+    //     proyectosArray = [...proyectosArray.filter(proyecto => proyecto.id != data.id)];
+    //     updateProyectos();
+    //   }
+    //   catch(err){
+    //     console.error(err);
+    //   }
+    // }
+
     const deleteProyecto = async(id) => {
       try{
         const url = `${Flask.url_for('proyectos')}/${id}`;
@@ -98,6 +131,8 @@
           <div>
             <h3>${proyecto.title}</h4>
             <p>${proyecto.desc}</p>
+            <br>
+            <a href="#" class="sm-link">Ver pendientes &rarr;</a>
           </div>
           <div>
             <button class='btn btn-warning' onClick="(deleteProyecto(${proyecto.id}))">Editar</button>
@@ -107,11 +142,20 @@
       `).join('') : 'No hay proyectos aun.'
     }
 
-    window.proyectos = {
-      addProyecto,
-      deleteProyecto
-    }
-
     getProyectos();
+
+    // CODIGO PROYECTO FORM
+    const $title = document.querySelector('#proyecto-title')
+    const $desc = document.querySelector('#proyecto-desc')
+
+    document.querySelector('#proyecto-form').addEventListener('submit', e => {
+      e.preventDefault();
+      let title = $title.value;
+      let desc = $desc.value;
+      addProyecto({title, desc})
+      //Clear form
+      e.target.reset()
+    })
+    
   </script>
 {% endblock %}

@@ -36,10 +36,8 @@ class Proyecto(db.Model):
 
 class Pendiente(db.Model):
   id                =db.Column(db.Integer, primary_key=True)
-  title             =db.Column(db.String(100))
   desc              =db.Column(db.String(255))
-  prior             =db.Column(db.Integer)
-  due_date          =db.Column(db.DateTime)
+  priority          =db.Column(db.Integer)
   completed         =db.Column(db.Boolean, default=False)
   id_proyecto       =db.Column(db.Integer, db.ForeignKey("proyecto.id"))
 

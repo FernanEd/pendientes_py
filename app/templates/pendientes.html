@@ -1,0 +1,99 @@
+{% block style %}
+<style>
+
+  #pendiente-bg{
+    background-color: #00000088;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+
+    padding: 1rem calc((100vw - 1000px - 0.5rem) / 2);
+  }
+
+  #pendiente-modal{
+    background-color: #ffffff;
+    padding: 0.5rem;
+    border: 0;
+    border-radius: 0.25rem;
+  }
+
+  #pendientes-form{
+    display: flex;
+    flex-direction: row;
+  }
+
+  .input-group:first-of-type{
+    flex: 1;
+  }
+
+  #close-btn{
+    width: 35px;
+    height: 35px;
+    margin-left: calc(100% - 35px);
+  }
+
+  .pendientes-item{
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+{% endblock %}
+
+<div id="pendiente-bg">
+  <div id="pendiente-modal">
+    <button id="close-btn" class="btn btn-disabled">X</button>
+    <h2>Agregar un pendiente</h2>
+    <form id="pendientes-form">
+      <div class='input-group'>
+        <label>
+          Descripción
+        </label> 
+        <input id="pendiente-desc" type="text" required>
+      </div>
+      <div class='input-group'>
+        <label>
+          Prioridad
+        </label> 
+        <select id="pendiente-priority" required>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+        </select>
+      </div>
+     <button class='btn' type="submit">Agregar</button>
+    </form>
+
+    <hr>
+
+    <h2>Pendientes</h2>
+    <section id="pendientes-wrapper">
+      <article class="pendientes-item">
+        <div class="pendientes-body">
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+          <p>Priority: 1</p>
+        </div>
+        <div>
+          <input type="checkbox" name="" id="">
+        </div>
+
+        
+      </article>
+    </section>
+  </div>
+</div>
+
+{% block script %}
+<script>
+  let modalActive = false;
+
+  let modalBG = document.querySelector("#pendiente-bg");
+
+
+  // const toggleModal = () => {
+
+  // }
+</script>
+{% endblock %}
