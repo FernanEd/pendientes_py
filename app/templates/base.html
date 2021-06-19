@@ -18,6 +18,8 @@
       --success: #2c2;
       --danger: #c25;
       --warning: #da2;
+
+			--page-width: 768px;
     }
 
     * {
@@ -85,7 +87,7 @@
 			color: var(--primary);
 			display: flex;
 			justify-content: space-between;
-			padding: 1rem calc((100vw - 1000px - 0.5rem) / 2);
+			padding: 1rem calc((100vw - var(--page-width) - 0.5rem) / 2);
 		}
 
 		body > header > nav > ul {
@@ -99,7 +101,7 @@
 		}
 
 		body > main {
-			padding: 1rem calc((100vw - 1000px - 0.5rem) / 2);
+			padding: 1rem calc((100vw - var(--page-width) - 0.5rem) / 2);
 		}
 
 		ul {

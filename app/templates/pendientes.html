@@ -1,6 +1,5 @@
 {% block style %}
 <style>
-
   #pendiente-bg{
     display: none;
     background-color: #00000088;
@@ -9,7 +8,7 @@
     right: 0;
     top: 0;
     bottom: 0;
-    padding: 2rem calc((100vw - 1000px - 0.5rem) / 2);
+    padding: 2rem calc((100vw - var(--page-width) - 0.5rem) / 2);
   }
 
   #pendiente-modal{
@@ -70,7 +69,7 @@
 <div id="pendiente-bg">
   <div id="pendiente-modal">
     <a id="modal-exit" href="#" class="sm-link">&larr; Volver a proyecto</a>
-    <h2>Agregar un pendiente</h2>
+    <h2>Agregar pendiente</h2>
     <form id="pendientes-form">
       <div class='input-group'>
         <label>
