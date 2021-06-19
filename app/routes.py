@@ -18,6 +18,7 @@ def unauthorized():
 def load_user(user_id):
     return User.query.filter_by(id=user_id).first()
 
+# ----[RUTAS]----
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -64,7 +65,7 @@ def logout():
     logout_user()
     return redirect(url_for("login"))
 
-# ----[RUTAS]----
+
 
 @app.route("/")
 @login_required
@@ -73,12 +74,12 @@ def index():
 
 # ----[API]----
 
-#{'title': 'lol', 'desc': 'xd'} 💤
+## Proyectos
 
 @app.route("/proyectos", methods=["GET", "POST"])
 def proyectos():
     if request.method == 'GET':
-        proyectos = Proyecto.query.all()
+        proyectos = Proyecto.query.filter_by(id_user=current_user.id).all()
         return jsonify([i.as_dict() for i in proyectos])
     elif request.method == 'POST':
         data = request.get_json(force=True)
@@ -92,20 +93,14 @@ def proyectos():
 @app.route("/proyectos/<int:id>", methods=["GET", "PUT", "DELETE"])
 def proyecto(id):
     if request.method == 'GET':
-        # proyectos = Proyecto.query.filter_by(id=id).first
-        # return jsonify([i.as_dict() for i in pendientes])
         return jsonify('get todos')
     elif request.method == 'PUT':
-        # x = Proyecto.query.filter_by(id=id).first()
         data = request.get_json(force=True)
-        updateProyecto = Proyecto(title=data["title"], desc=data["desc"], id_user=current_user.id)
-        ### Update manual en SQLAlchemy ###
-        # x.title = updateProyecto.title
-        # x.desc = updateProyecto.desc
-        # db.session.commit()
-        print(data)
-        print()
-        return jsonify('put todo')
+        proyecto = Proyecto.query.get(id)
+        proyecto.title = data["title"]
+        proyecto.desc = data["desc"]
+        db.session.commit()
+        return jsonify(proyecto.as_dict())
         
     elif request.method == 'DELETE':
         print(id)
@@ -116,15 +111,7 @@ def proyecto(id):
     else:
         return jsonify('error: MAL REQUEST')
 
-# REST API
-# ruta/ 
-    # obtener todos <- GET
-    # postear uno <-POST
-
-# ruta/id
-    # editar uno <- PUT
-    # borrar uno <- DELETE
-    # obtener uno <- GET
+## Pendientes
 
 @app.route("/proyectos/<int:proyectoid>/pendientes/", methods=["GET", "POST"])
 def pendientes(proyectoid):

@@ -93,21 +93,21 @@
       }
     }
 
-    // const editProyecto = async(id, {title, desc}) => {
-    //   try{
-    //     const url = `${Flask.url_for('proyectos')}/${id}`;
-    //     let res = await fetch(url, {
-    //       method: "DELETE"
-    //     })
-    //     let data = await res.json();
-
-    //     proyectosArray = [...proyectosArray.filter(proyecto => proyecto.id != data.id)];
-    //     updateProyectos();
-    //   }
-    //   catch(err){
-    //     console.error(err);
-    //   }
-    // }
+    const editProyecto = async(id, {title, desc}) => {
+      try{
+        const url = `${Flask.url_for('proyectos')}/${id}`;
+        let res = await fetch(url, {
+          method: "PUT",
+          body: JSON.stringify({title, desc})
+        })
+        let data = await res.json();
+        proyectosArray = proyectosArray.map(proyecto => proyecto.id != id? proyecto: data);
+        updateProyectos();
+      }
+      catch(err){
+        console.error(err);
+      }
+    }
 
     const deleteProyecto = async(id) => {
       try{
@@ -135,12 +135,12 @@
             <a href="#" class="sm-link" onClick="(abrirPendientes(${proyecto.id}))"">Ver pendientes &rarr;</a>
           </div>
           <div>
-            <button class='btn btn-warning' onClick="(deleteProyecto(${proyecto.id}))">Editar</button>
+            <button class='btn btn-warning' onClick="(editForm(${proyecto.id}, '${proyecto.title}', '${proyecto.desc}'))">Editar</button>
             <button class='btn btn-danger' onClick="(deleteProyecto(${proyecto.id}))">Eliminar</button>
           </div>
         </article>
       `).join('') : 'No hay proyectos aun.'
-    }
+    } 
 
     getProyectos();
 
@@ -153,15 +153,44 @@
     // CODIGO PROYECTO FORM
     const $title = document.querySelector('#proyecto-title')
     const $desc = document.querySelector('#proyecto-desc')
+    const $form = document.querySelector('#proyecto-form');
+    let isEditing = false;
 
-    document.querySelector('#proyecto-form').addEventListener('submit', e => {
+    let resetForm = () => {};
+ 
+    $form.addEventListener('submit', e => {
       e.preventDefault();
       let title = $title.value;
       let desc = $desc.value;
-      addProyecto({title, desc})
+
+      if(!isEditing){
+        addProyecto({title, desc})
+      }
+
       //Clear form
       e.target.reset()
+      resetForm(title, desc);
+      resetForm = () => {};
     })
     
+    const editForm = (proyectoid, title, desc) => {
+      isEditing = true;
+
+      const $btn = $form.querySelector('button');
+      const btnTxt = $btn.innerText;
+      $btn.classList.add('btn-warning')
+      $btn.innerText = 'Editar proyecto';
+
+      $title.value = title;
+      $desc.value = desc;
+
+      resetForm = (title, desc) => {
+        $btn.classList.remove('btn-warning')
+        $btn.innerText = btnTxt;
+        isEditing = false;
+        editProyecto(proyectoid, { title, desc })
+      }
+    }
+
   </script>
 {% endblock %}

@@ -60,6 +60,10 @@
     border-left: 5px solid var(--primary);
     border-radius: 0rem 0.25rem 0.25rem 0rem;
   }
+
+  .completed{
+    filter: brightness(0.8);
+  }
 </style>
 {% endblock %}
 
@@ -140,6 +144,8 @@
         method: 'PATCH',
       })
       let data = await res.json();
+      let indx = pendientesArray.findIndex((pendiente)=> pendiente.id == pendienteid)
+      pendientesArray[indx].completed = !pendientesArray[indx].completed;
     }
     catch(err){
       $pendientes.innerText = err.error;
