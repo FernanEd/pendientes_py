@@ -2,21 +2,22 @@
 <style>
 
   #pendiente-bg{
+    display: none;
     background-color: #00000088;
     position: fixed;
     left: 0;
     right: 0;
     top: 0;
     bottom: 0;
-
-    padding: 1rem calc((100vw - 1000px - 0.5rem) / 2);
+    padding: 2rem calc((100vw - 1000px - 0.5rem) / 2);
   }
 
   #pendiente-modal{
     background-color: #ffffff;
-    padding: 0.5rem;
+    padding: 1rem 0.5rem;
     border: 0;
     border-radius: 0.25rem;
+    box-shadow: 0px 2px 10px 1px #000000aa;
   }
 
   #pendientes-form{
@@ -38,6 +39,16 @@
     width: 35px;
     height: 35px;
     margin-left: calc(100% - 35px);
+  }
+
+  #pendientes-wrapper{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    padding-right: 0.5rem;
+    overflow-y: scroll;
+    max-height: 27rem;
   }
 
   .pendientes-item{
@@ -81,30 +92,85 @@
 
     <h2>Pendientes</h2>
     <section id="pendientes-wrapper">
-      <article class="pendientes-item">
-        <div>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-          <p><strong>Priority:</strong> 1</p>
-        </div>
-        <div>
-          <input type="checkbox" name="" id="">
-        </div>
-      </article>
     </section>
   </div>
 </div>
 
 {% block script %}
 <script>
+  let pendientesArray = [];
+  const $pendientes = document.querySelector('#pendientes-wrapper');
+
+  const getPendientes = async() => {
+    $pendientes.innerText = 'Loading...'
+    try{
+      const url = `${Flask.url_for('proyectos')}/${window.compartido.proyectoid}/pendientes`;
+      let res = await fetch(url)
+      let data = await res.json();
+      pendientesArray = [...data];
+      updatePendientes();
+    }
+    catch(err){
+      $pendientes.innerText = err.error;
+      console.error(err);
+    }
+  }
+
+  const addPendiente = async({desc, priority}) => {
+    try{
+      const url = `${Flask.url_for('proyectos')}/${window.compartido.proyectoid}/pendientes/`;
+      let res = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify({desc, priority})
+      })
+      let data = await res.json();
+      pendientesArray = [...pendientesArray, data];
+      updatePendientes();
+    }
+    catch(err){
+      $pendientes.innerText = err.error;
+      console.error(err);
+    }
+  }
+
+  const togglePendiente = async(pendienteid) => {
+    try{
+      const url = `${Flask.url_for('proyectos')}/${window.compartido.proyectoid}/pendientes/${pendienteid}`;
+      let res = await fetch(url, {
+        method: 'PATCH',
+      })
+      let data = await res.json();
+    }
+    catch(err){
+      $pendientes.innerText = err.error;
+      console.error(err);
+    }
+  }
+
+  const updatePendientes = () => {
+    $pendientes.innerHTML = pendientesArray.length > 0 ? pendientesArray.sort((a,b) => a.priority < b.priority? 1: -1).map(pendiente => `
+      <article class="pendientes-item">
+        <div>
+          <p>${pendiente.desc}</p>
+          <p><strong>Priority:</strong> ${pendiente.priority}</p>
+        </div>
+        <div>
+          <input type="checkbox" ${pendiente.completed? "checked": null} onchange="togglePendiente(${pendiente.id})">
+        </div>
+      </article>
+    `).join('') : 'No hay pendientes aun.'
+  }
 
   // CODIGO MODAL
-
   let modalActive = false;
   let modalBtn = document.querySelector("#modal-exit");
   let modalBG = document.querySelector("#pendiente-bg");
   const toggleModal = () => {
-    modalBG.style.display = modalActive? 'initial' : 'none';
     modalActive = !modalActive;
+    modalBG.style.display = modalActive? 'initial' : 'none';
+    if(modalActive){
+      getPendientes();
+    }
   }
   modalBtn.addEventListener('click', toggleModal);
   window.compartido = {...window.compartido, toggleModal}
@@ -117,10 +183,9 @@
     e.preventDefault();
     let desc = $pendiente_desc.value;
     let priority = $pendiente_priority.value;
-    console.log(desc, priority);
-    // addProyecto({title, desc})
-    // //Clear form
-    // e.target.reset()
+    addPendiente({desc, priority})
+    //Clear form
+    e.target.reset()
   })
 
 </script>

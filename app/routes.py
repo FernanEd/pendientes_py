@@ -1,9 +1,9 @@
 from flask.helpers import flash
 from app import app
-from flask import render_template, url_for, redirect, request, jsonify
+from flask import json, render_template, url_for, redirect, request, jsonify
 from app.forms import LoginForm, RegisterForm
 from flask_login import current_user, login_user, logout_user, login_manager, LoginManager, login_required
-from app.models import Proyecto, User
+from app.models import Pendiente, Proyecto, User
 from app import db
 
 # ----[LOGIN]----
@@ -92,7 +92,8 @@ def proyectos():
 @app.route("/proyectos/<int:id>", methods=["GET", "PUT", "DELETE"])
 def proyecto(id):
     if request.method == 'GET':
-        
+        # proyectos = Proyecto.query.filter_by(id=id).first
+        # return jsonify([i.as_dict() for i in pendientes])
         return jsonify('get todos')
     elif request.method == 'PUT':
         # x = Proyecto.query.filter_by(id=id).first()
@@ -128,24 +129,24 @@ def proyecto(id):
 @app.route("/proyectos/<int:proyectoid>/pendientes/", methods=["GET", "POST"])
 def pendientes(proyectoid):
     if request.method == 'GET':
-        return 1
+        pendientes = Pendiente.query.filter_by(id_proyecto=proyectoid).all()
+        return jsonify([i.as_dict() for i in pendientes])
     elif request.method == 'POST':
-
-        return 2
+        data = request.get_json(force=True)
+        nuevoPendiente = Pendiente(desc=data["desc"], priority=data["priority"], id_proyecto=proyectoid)
+        db.session.add(nuevoPendiente)
+        db.session.commit()
+        return jsonify(nuevoPendiente.as_dict())
     else:
         return jsonify('error: MAL REQUEST')
 
-@app.route("/proyectos/<int:proyectoid>/pendientes/<int:pendienteid>", methods=["GET", "PUT", "DELETE"])
+@app.route("/proyectos/<int:proyectoid>/pendientes/<int:pendienteid>", methods=["GET", "PATCH", "DELETE"])
 def pendiente(proyectoid, pendienteid):
-    if request.method == 'GET':
-        
-        return 4
-    elif request.method == 'PUT':
-
-        return 5
-        
-    elif request.method == 'DELETE':
-
-        return 6
+    if request.method == 'PATCH':
+        print('holaaaa', proyectoid, pendienteid)
+        pendiente = Pendiente.query.get(pendienteid)
+        pendiente.completed = False if pendiente.completed else True
+        db.session.commit()
+        return jsonify(pendiente.as_dict())
     else:
         return jsonify('error: MAL REQUEST')
