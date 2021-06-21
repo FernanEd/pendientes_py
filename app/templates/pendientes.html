@@ -61,7 +61,10 @@
   }
 
   .completed{
-    filter: brightness(0.8);
+    background-color: var(--light);
+    filter: brightness(0.95);
+
+    text-decoration: line-through;
   }
 </style>
 {% endblock %}
@@ -145,6 +148,7 @@
       let data = await res.json();
       let indx = pendientesArray.findIndex((pendiente)=> pendiente.id == pendienteid)
       pendientesArray[indx].completed = !pendientesArray[indx].completed;
+      updatePendientes();
     }
     catch(err){
       $pendientes.innerText = err.error;
@@ -153,8 +157,12 @@
   }
 
   const updatePendientes = () => {
-    $pendientes.innerHTML = pendientesArray.length > 0 ? pendientesArray.sort((a,b) => a.priority < b.priority? 1: -1).map(pendiente => `
-      <article class="pendientes-item">
+    $pendientes.innerHTML = pendientesArray.length > 0 
+    ? pendientesArray
+    .sort((a, b) => a.priority > b.priority? 1: -1)
+    .sort((a, b) => a.completed? 1: -1)
+    .map(pendiente => `
+      <article class="pendientes-item ${pendiente.completed? "completed": ''}">
         <div>
           <p>${pendiente.desc}</p>
           <p><strong>Priority:</strong> ${pendiente.priority}</p>
