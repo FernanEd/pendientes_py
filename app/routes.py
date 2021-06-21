@@ -52,10 +52,10 @@ def register():
             db.session.add(user)
             db.session.commit()
             login_user(user, remember=True)
-            return redirect(url_for("login"))
-        else:
-            # TODO: flash "ya estas registrado"-
             return redirect(url_for("index"))
+        else:
+            flash("El usuario ya existe o tu contraseñas no coincide")
+            return redirect(url_for("register"))
     else:
         return render_template("register.html", form=form)
 
@@ -130,7 +130,6 @@ def pendientes(proyectoid):
 @app.route("/proyectos/<int:proyectoid>/pendientes/<int:pendienteid>", methods=["GET", "PATCH", "DELETE"])
 def pendiente(proyectoid, pendienteid):
     if request.method == 'PATCH':
-        print('holaaaa', proyectoid, pendienteid)
         pendiente = Pendiente.query.get(pendienteid)
         pendiente.completed = False if pendiente.completed else True
         db.session.commit()
